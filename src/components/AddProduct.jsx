@@ -15,8 +15,6 @@ const AddProduct = () => {
     });
     setName("");
     setQuantity(0);
-    // Recarga la página para actualizar la lista de productos
-    window.location.reload();
   };
 
   return (

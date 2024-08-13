@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import EditProduct from "./EditProduct";
 
@@ -8,26 +8,22 @@ const ProductsList = () => {
   const [editingProduct, setEditingProduct] = useState(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      setProducts(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-    };
+    // Configura un listener para obtener los productos en tiempo real
+    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+      setProducts(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+    });
 
-    fetchProducts();
+    // Cleanup para detener la escucha cuando el componente se desmonte
+    return () => unsubscribe();
   }, []);
 
   const handleDelete = async (id) => {
     await deleteDoc(doc(db, "products", id));
-    setProducts(products.filter(product => product.id !== id));
   };
 
   const handleEditComplete = () => {
     setEditingProduct(null);
-    const fetchProducts = async () => {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      setProducts(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-    };
-    fetchProducts();
+    // No es necesario hacer fetch de los productos aquí, ya que onSnapshot se encargará de actualizar la lista automáticamente
   };
 
   return (
@@ -40,8 +36,10 @@ const ProductsList = () => {
           {products.map(product => (
             <li key={product.id}>
               {product.name} - {product.quantity}
-              <button onClick={() => handleDelete(product.id)}>Eliminar</button>
-              <button onClick={() => setEditingProduct(product)}>Editar</button>
+              <div className="botones">
+                <button onClick={() => handleDelete(product.id)}>Eliminar</button>
+                <button onClick={() => setEditingProduct(product)}>Editar</button>
+              </div>
             </li>
           ))}
         </ul>
