@@ -1,6 +1,7 @@
 import React from "react";
 import ProductsList from "./components/ProductsList";
 import AddProduct from "./components/AddProduct";
+import './styles/styles.css';
 
 function App() {
   return (

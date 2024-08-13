@@ -13,7 +13,7 @@ const EditProduct = ({ product, onEditComplete }) => {
       name,
       quantity
     });
-    onEditComplete(); // Llamar a una función para actualizar la lista después de la edición
+    onEditComplete();
   };
 
   return (

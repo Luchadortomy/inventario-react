@@ -1,3 +1,4 @@
+// src/components/AddProduct.jsx
 import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
@@ -14,6 +15,8 @@ const AddProduct = () => {
     });
     setName("");
     setQuantity(0);
+    // Recarga la página para actualizar la lista de productos
+    window.location.reload();
   };
 
   return (
